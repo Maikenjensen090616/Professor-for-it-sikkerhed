@@ -1,0 +1,75 @@
+// Variables
+$primary-color: #8B7AA8;     // Mat lavendel - hovedfarve
+$secondary-color: #B8A7D3;   // Lys lavendel - sekundær farve
+$accent-color: #9FD8E5;      // Mat turkis - accent farve
+$gradient-color: #E8B7D4;    // Støvet rosa - gradient farve
+$success-color: #A8D5AA;     // Mat grøn - korrekt svar
+$error-color: #E6A5A5;       // Mat rød - forkert svar
+$text-color: #4A4A4A;        // Mørkegrå - tekst
+$white: #FFFFFF;             // Hvid
+$glass-opacity: 0.25;        // Opacity for glaseffekt
+
+// Responsive breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
+// Mixins
+@mixin glass-effect {
+    background-color: rgba($white, $glass-opacity);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba($white, 0.18);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba($accent-color, 0.1),
+            transparent
+        );
+        transition: 0.5s;
+        pointer-events: none;
+    }
+    
+    &:hover::before {
+        left: 100%;
+    }
+}
+
+@mixin button-style {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+    border: 1px solid rgba($white, 0.3);
+    color: $text-color;
+    background: linear-gradient(
+        120deg,
+        rgba($accent-color, 0.2),
+        rgba($gradient-color, 0.2)
+    );
+    
+    &:hover {
+        background: linear-gradient(
+            120deg,
+            rgba($accent-color, 0.3),
+            rgba($gradient-color, 0.3)
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba($accent-color, 0.2);
+    }
+}
+
+@mixin card-shadow {
+    box-shadow: 0 4px 6px rgba($primary-color, 0.1);
+}

@@ -1,0 +1,675 @@
+@import 'partial';
+
+
+// Base styles
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    max-width: 800px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: $primary-color;
+    color: $text-color;
+    background: 
+        linear-gradient(135deg, $primary-color 0%, $secondary-color 100%),
+        radial-gradient(circle at top right, $gradient-color 0%, transparent 50%),
+        radial-gradient(circle at bottom left, $accent-color 0%, transparent 50%);
+    background-blend-mode: soft-light;
+    position: relative;
+    
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @media (max-width: $mobile) {
+        padding: 10px;
+    }
+}
+
+#app {
+    @include glass-effect;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 
+        0 8px 32px rgba(31, 38, 135, 0.37),
+        0 10px rgba($accent-color, 0.1),
+        0 0 20px rgba($gradient-color, 0.1);
+    animation: fadeIn 0.5s ease-out, pulseGlow 4s ease-in-out infinite;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    position: relative;
+    z-index: 1;
+
+    #intro {
+        text-align: center;
+
+        .character-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+
+        .intro-image {
+            width: 150px;
+            height: auto;
+            animation: float 3s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        .speech-bubble {
+            position: relative;
+            background: rgba($white, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            width: 450px;
+            box-shadow: 
+                0 4px 15px rgba($black, 0.1),
+                0 0 0 1px rgba($white, 0.2);
+            text-align: left;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: -20px;
+                top: 50%;
+                transform: translateY(-50%);
+                border-style: solid;
+                border-width: 15px 20px 15px 0;
+                border-color: transparent rgba($white, 0.2) transparent transparent;
+            }
+
+            p {
+                margin: 0;
+                color: $text-color;
+                font-size: 1.2em;
+                line-height: 1.5;
+            }
+        }
+        
+        button {
+            @include button-style;
+            background-color: $accent-color;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            
+            &:hover {
+                background-color: darken($accent-color, 10%);
+            }
+        }
+    }
+
+    @media (max-width: $mobile) {
+        padding: 15px;
+        border-radius: 8px;
+    }
+}
+
+h2 {
+    color: $text-color;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    border-bottom: 2px solid rgba($white, 0.2);
+    padding-bottom: 10px;
+
+    @media (max-width: $mobile) {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+}
+
+
+
+// Buttons
+.back-button {
+    @include button-style;
+    position: absolute;
+    top: 20px;
+    left: -150px;
+    z-index: 10;
+    background-color: transparent;
+
+    i {
+        margin-right: 8px;
+    }
+
+    @media (max-width: $mobile) {
+        position: static;
+        margin-bottom: 20px;
+        width: auto;
+        display: inline-block;
+    }
+}
+
+.option {
+    @include button-style;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 15px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+    backdrop-filter: blur(8px);
+    
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+
+    &.correct {
+        border-color: $success-color;
+        background: linear-gradient(120deg, 
+            rgba($success-color, 0.1),
+            rgba($success-color, 0.2)
+        );
+    }
+
+    &.incorrect {
+        border-color: $error-color;
+        background: linear-gradient(120deg, 
+            rgba($error-color, 0.1),
+            rgba($error-color, 0.2)
+        );
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    &::after {
+        content: '→';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    &:not(:disabled):hover {
+        transform: translateX(10px);
+        
+        &::after {
+            opacity: 1;
+        }
+    }
+
+    &.correct {
+        border-color: $success-color;
+        background-color: rgba($success-color, 0.2);
+    }
+
+    &.incorrect {
+        border-color: $error-color;
+        background-color: rgba($error-color, 0.2);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+}
+
+// Summary section
+#summary {
+    h2 {
+        color: $text-color;
+        margin-bottom: 30px;
+    }
+
+    #summary-choices {
+        div {
+            margin: 15px 0;
+            padding: 15px;
+            @include glass-effect;
+            border-radius: 5px;
+
+            &.correct {
+                border-left: 4px solid $success-color;
+            }
+
+            &.incorrect {
+                border-left: 4px solid $error-color;
+            }
+
+            strong {
+                color: $text-color;
+                display: block;
+                margin-bottom: 8px;
+            }
+        }
+    }
+}
+
+// Progress indicator
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: rgba($white, 0.1);
+    border-radius: 5px;
+    margin: 20px 0;
+    overflow: hidden;
+
+    &__fill {
+        height: 100%;
+        background-color: $accent-color;
+        transition: width 0.3s ease;
+    }
+}
+
+// Animations
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceEmoji {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-15px) scale(1.1);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        filter: brightness(1) drop-shadow(0 0 5px rgba($accent-color, 0.2));
+    }
+    50% {
+        filter: brightness(1.2) drop-shadow(0 0 15px rgba($accent-color, 0.4));
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 5px rgba($accent-color, 0.1),
+                    0 0 10px rgba($gradient-color, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba($accent-color, 0.2),
+                    0 0 30px rgba($gradient-color, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba($accent-color, 0.1),
+                    0 0 10px rgba($gradient-color, 0.1);
+    }
+}
+
+// Feedback styling
+.feedback-container {
+    margin: 30px 0;
+    position: relative;
+    
+    .feedback-message {
+        padding: 25px;
+        border-radius: 15px;
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        background: rgba($white, 0.15);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba($white, 0.2);
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+        
+        &.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        &.correct {
+            border: none;
+            background: linear-gradient(135deg, 
+                rgba($success-color, 0.1) 0%,
+                rgba($success-color, 0.2) 50%,
+                rgba($accent-color, 0.1) 100%
+            );
+            box-shadow: 
+                0 8px 32px rgba($success-color, 0.15),
+                0 0 0 1px rgba($success-color, 0.2) inset;
+        }
+
+        &.incorrect {
+            border: none;
+            background: linear-gradient(135deg, 
+                rgba($error-color, 0.1) 0%,
+                rgba($error-color, 0.2) 50%,
+                rgba($gradient-color, 0.1) 100%
+            );
+            box-shadow: 
+                0 8px 32px rgba($error-color, 0.15),
+                0 0 0 1px rgba($error-color, 0.2) inset;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            background: linear-gradient(45deg, 
+                rgba($white, 0.1),
+                rgba($white, 0.05)
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        &:hover::before {
+            opacity: 1;
+        }
+    }
+
+    .feedback-emoji {
+        font-size: 3em;
+        margin: 0 0 15px 0;
+        animation: bounceEmoji 2s ease-in-out infinite;
+        display: inline-block;
+        filter: drop-shadow(0 4px 8px rgba($black, 0.1));
+    }
+
+    .feedback-title {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 0 0 10px 0;
+        background: linear-gradient(135deg,
+            rgba($accent-color, 0.9),
+            rgba($gradient-color, 0.9)
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 4px rgba($black, 0.1));
+    }
+
+    .feedback-text {
+        margin: 15px 0;
+        line-height: 1.6;
+        color: $text-color;
+        font-size: 1.1em;
+        letter-spacing: 0.2px;
+        text-shadow: 0 1px 2px rgba($black, 0.05);
+        position: relative;
+        padding-left: 20px;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5em;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.5;
+        }
+    }
+
+    .continue-button {
+        @include button-style;
+        margin-top: 20px;
+        padding: 12px 30px;
+        font-size: 1.1em;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        background: linear-gradient(135deg, 
+            rgba($accent-color, 0.3),
+            rgba($gradient-color, 0.3)
+        );
+        border: none;
+        box-shadow: 
+            0 4px 15px rgba($accent-color, 0.2),
+            0 0 0 1px rgba($white, 0.1) inset;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+        span {
+            position: relative;
+            z-index: 1;
+        }
+
+        svg {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba($accent-color, 0.4),
+                rgba($gradient-color, 0.4)
+            );
+            box-shadow: 
+                0 6px 20px rgba($accent-color, 0.25),
+                0 0 0 1px rgba($white, 0.15) inset;
+
+            svg {
+                transform: translateX(3px);
+            }
+        }
+
+        &:active {
+            transform: translateY(-1px) scale(0.98);
+
+            svg {
+                transform: translateX(1px);
+            }
+        }
+    }
+}
+
+// Score display
+.final-score {
+    text-align: center;
+    padding: 30px;
+    margin: 20px 0;
+    @include glass-effect;
+    border-radius: 10px;
+
+    h3 {
+        color: $text-color;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+
+    .score {
+        font-size: 2.5em;
+        color: $accent-color;
+        margin: 20px 0;
+    }
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 0 20px;
+
+    .navigation-buttons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .back-button {
+        background: rgba($white, 0.1);
+        border: 1px solid rgba($white, 0.2);
+        border-radius: 8px;
+        color: $text-color;
+        cursor: pointer;
+        padding: 8px 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9em;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: rgba($white, 0.2);
+            transform: translateY(-1px);
+        }
+
+        i {
+            font-size: 1.1em;
+        }
+    }
+
+    .back-button,
+    .continue-button {
+        @include button-style;
+        padding: 12px 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+
+        i {
+            font-size: 1.2em;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba($black, 0.2);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .back-button {
+        background: linear-gradient(135deg, rgba($primary-color, 0.8), rgba($gradient-color, 0.8));
+    }
+
+    .continue-button {
+        background: linear-gradient(135deg, rgba($accent-color, 0.8), rgba($gradient-color, 0.8));
+    }
+}
+
+// Fortæller animation
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+// Character container and speech bubble
+// Character container and speech bubble
+.character-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 30px auto;
+    max-width: 800px;
+    gap: 20px;
+
+    .intro-image {
+        width: 150px;
+        height: auto;
+        animation: float 3s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+}
+
+.speech-bubble {
+    position: relative;
+    background: rgba($white, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+    width: 450px;
+    box-shadow: 
+        0 4px 15px rgba($black, 0.1),
+        0 0 0 1px rgba($white, 0.2);
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-style: solid;
+        border-width: 15px 20px 15px 0;
+        border-color: transparent rgba($white, 0.2) transparent transparent;
+    }
+
+    p {
+        margin: 0;
+        color: $text-color;
+        font-size: 1.2em;
+        line-height: 1.5;
+    }
+}
+
+// Navigation buttons
+.navigation-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    
+    .back-button {
+        background: rgba($white, 0.15);
+        border: 1px solid rgba($white, 0.2);
+        border-radius: 8px;
+        color: $text-color;
+        cursor: pointer;
+        padding: 8px 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9em;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        
+        &:hover {
+            background: rgba($white, 0.2);
+            transform: translateY(-1px);
+        }
+
+        i {
+            font-size: 1.1em;
+        }
+    }
+}

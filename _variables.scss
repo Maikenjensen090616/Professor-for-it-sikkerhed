@@ -1,0 +1,90 @@
+// Colors
+$primary-color: #8B7AA8;     // Mat lavendel - hovedfarve
+$secondary-color: #B8A7D3;   // Lys lavendel - sekundær farve
+$accent-color: #9FD8E5;      // Mat turkis - accent farve
+$gradient-color: #E8B7D4;    // Støvet rosa - gradient farve
+$success-color: #A8D5AA;     // Mat grøn - korrekt svar
+$error-color: #E6A5A5;       // Mat rød - forkert svar
+$text-color: #4A4A4A;        // Mørkegrå - tekst
+$white: #FFFFFF;             // Hvid
+$black: #000000;             // Sort
+$glass-opacity: 0.25;        // Opacity for glaseffekt
+
+// Fortæller farver
+$character-color: #4a90e2;    // Blå - fortæller hovedfarve
+$character-accent: #357abd;   // Mørk blå - fortæller accent
+$glasses-color: #1f1f1f;     // Næsten sort - brillefarve
+
+// Responsive breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
+// Animation timings
+$transition-fast: 0.3s;
+$transition-medium: 0.5s;
+$transition-slow: 0.8s;
+
+// Spacing
+$spacing-xs: 5px;
+$spacing-sm: 10px;
+$spacing-md: 15px;
+$spacing-lg: 20px;
+$spacing-xl: 30px;
+
+// Border radius
+$border-radius-sm: 5px;
+$border-radius-md: 10px;
+$border-radius-lg: 15px;
+$border-radius-full: 50%;
+
+// Box shadows
+$shadow-sm: 0 2px 4px rgba($black, 0.1);
+$shadow-md: 0 4px 6px rgba($black, 0.1);
+$shadow-lg: 0 8px 16px rgba($black, 0.1);
+$shadow-xl: 0 12px 24px rgba($black, 0.15);
+
+// Z-index layers
+$z-index-base: 1;
+$z-index-overlay: 10;
+$z-index-modal: 100;
+$z-index-tooltip: 1000;
+
+// Mixins
+@mixin glass-effect {
+    background: rgba($white, $glass-opacity);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba($white, 0.2);
+    box-shadow: $shadow-lg;
+}
+
+@mixin button-style {
+    padding: $spacing-md $spacing-xl;
+    border: none;
+    border-radius: $border-radius-md;
+    cursor: pointer;
+    font-size: 1em;
+    color: $text-color;
+    background: linear-gradient(135deg,
+        rgba($accent-color, 0.8),
+        rgba($gradient-color, 0.8)
+    );
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: all $transition-fast ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-lg;
+        background: linear-gradient(135deg,
+            rgba($accent-color, 0.9),
+            rgba($gradient-color, 0.9)
+        );
+    }
+    
+    &:active {
+        transform: translateY(0);
+        box-shadow: $shadow-md;
+    }
+}
